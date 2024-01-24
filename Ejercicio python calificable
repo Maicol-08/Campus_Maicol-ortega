@@ -1,0 +1,60 @@
+#Pregunta a una persona su edad y utiliza una declaración if para determinar si es mayor de 18 años y puede votar.
+edad=int(input("ingrese su edad "))
+if edad>=18:
+    print("usted ed mayor de edad, por lo tanto puede votar ")
+else:
+    print("usted es menor de edad, por lo tanto no puede votar ")
+
+
+#Pide una calificación numérica y utiliza condicionales elif para asignar una calificación en letras, como A, B, C o D.
+    
+calificacion=float(input("ingrese su calificacion "))
+if 5.0 <= calificacion <= 4.6 :
+    print("Su nota es superior A ")
+elif 4.0 <= calificacion <= 4.6:
+    print("Su nota es alta B ")
+elif 3.0 <= calificacion <= 4.0:
+    print("su nota es basica C ")
+else: 
+    calificacion <3.0
+    print("su califiacion es baja D ")
+
+
+   #Permítele a alguien elegir un tipo de comida y utiliza condicionales if para recomendar un restaurante según la elección (por ejemplo, comida italiana, mexicana o china).
+tipo_comida = input("¿Qué tipo de comida te gustaría comer? (italiana, mexicana o china): ")
+
+# Utiliza condicionales if para recomendar un restaurante según la elección
+if tipo_comida.lower() == "italiana":
+    print("Te recomiendo el restaurante 'La Trattoria', que sirve deliciosa comida italiana.")
+
+elif tipo_comida.lower() == "mexicana":
+    print("Para auténtica comida mexicana, prueba 'El Jalapeño', un excelente restaurante mexicano.")
+
+elif tipo_comida.lower() == "china":
+    print("Si te apetece comida china, 'El Dragón Dorado' es una excelente opción.")
+
+else:
+    print("Lo siento, no conozco restaurantes de ese tipo. Por favor, elige entre italiana, mexicana o china.")
+
+
+#Solicita una contraseña y utiliza una declaración if para verificar si coincide con una contraseña predefinida antes de permitir el acceso
+    
+contraseña=input("ingrese contraseña ")
+if contraseña=="Maicol":
+    print("acceso concedido")
+else:
+    print("contraseña incorrecta, Acceso denegado ")
+
+
+#Pide a alguien que ingrese una palabra y utiliza condicionales para determinar si es un palíndromo, es decir, si se lee igual de izquierda a derecha y de derecha a izquierda.
+    
+def es_palindromo(palabra):
+    palabra = palabra.lower()
+    palabra = palabra.replace(" ", "")
+    inversa = palabra[::-1]
+    return palabra == inversa
+palabra_ingresada = input("Ingresa una palabra: ")
+if es_palindromo(palabra_ingresada):
+    print(palabra_ingresada, "es un palíndromo.")
+else:
+    print(palabra_ingresada, "no es un palíndromo.")
