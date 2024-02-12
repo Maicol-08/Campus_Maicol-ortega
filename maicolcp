@@ -1,0 +1,219 @@
+import json
+
+# Capturar los datos de un camper
+def capturar_datos_camper(rutas_ocupadas):
+    print("E͙r͙e͙s͙ ͙U͙n͙ ͙C͙a͙m͙p͙e͙r͙ ͙I͙n͙g͙r͙e͙s͙a͙ ͙T͙u͙s͙ ͙D͙a͙t͙o͙s͙:͙")
+    print("---𝓜𝓮𝓷𝓾 𝓒𝓪𝓶𝓹𝓮𝓻---")
+    NumId = int(input("Ingrese su número de identificación sin puntos ni comas: "))
+    Nombre = input("Ingrese sus nombres: ")
+    Apellidos = input("Ingrese sus apellidos: ")
+    Direccion = input("Ingrese su dirección: ")
+    Acudiente = input("Ingrese el nombre de su acudiente: ")
+    Celular = input("Ingrese su número de celular: ")
+    Fijo = input("Ingrese su número de teléfono fijo: ")
+    Riesgo = input("Ingrese el nivel de riesgo: ")
+    Ruta = input("Ingrese la ruta de entrenamiento a la cual aspira (NodeJS, Java, NetCore): ").lower()
+    
+    # Validar que la ruta ingresada sea una de las opciones válidas
+    while Ruta not in ["nodejs", "java", "netcore"]:
+        print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+        Ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+    
+    # Verificar si la ruta tiene cupo disponible
+    if Ruta in rutas_ocupadas and rutas_ocupadas[Ruta] >= 33:
+        print("Lo siento, la ruta", Ruta, "ya ha alcanzado el máximo de 33 campers inscritos.")
+        return None
+    
+    # Incrementar el contador de la ruta
+    if Ruta in rutas_ocupadas:
+        rutas_ocupadas[Ruta] += 1
+    else:
+        rutas_ocupadas[Ruta] = 1
+    
+    return {
+        'NumId': NumId,
+        'Nombre': Nombre,
+        'Apellidos': Apellidos,
+        'Direccion': Direccion,
+        'Acudiente': Acudiente,
+        'Celular': Celular,
+        'Fijo': Fijo,
+        'Riesgo': Riesgo,
+        'Ruta': Ruta
+    }
+
+# Modificar los datos de un camper
+def modificar_camper(camper):
+    print("Modificar datos del camper:")
+    print("1. Modificar número de identificación")
+    print("2. Modificar nombres")
+    print("3. Modificar apellidos")
+    print("4. Modificar dirección")
+    print("5. Modificar acudiente")
+    print("6. Modificar número de celular")
+    print("7. Modificar número de teléfono fijo")
+    print("8. Modificar nivel de riesgo")
+    print("9. Modificar ruta de entrenamiento")
+    # Agrega más opciones para modificar otros campos según sea necesario
+    
+    opcion = int(input("Ingrese el número de la opción que desea modificar: "))
+    
+    if opcion == 1:
+        camper['NumId'] = int(input("Ingrese el nuevo número de identificación: "))
+    elif opcion == 2:
+        camper['Nombre'] = input("Ingrese los nuevos nombres: ")
+    elif opcion == 3:
+        camper['Apellidos'] = input("Ingrese los nuevos apellidos: ")
+    elif opcion == 4:
+        camper['Direccion'] = input("Ingrese la nueva dirección: ")
+    elif opcion == 5:
+        camper['Acudiente'] = input("Ingrese el nuevo acudiente: ")
+    elif opcion == 6:
+        camper['Celular'] = input("Ingrese el nuevo número de celular: ")
+    elif opcion == 7:
+        camper['Fijo'] = input("Ingrese el nuevo número de teléfono fijo: ")
+    elif opcion == 8:
+        camper['Riesgo'] = input("Ingrese el nuevo nivel de riesgo: ")
+    elif opcion == 9:
+        nueva_ruta = input("Ingrese la nueva ruta de entrenamiento (NodeJS, Java, NetCore): ").capitalize()
+        while nueva_ruta not in ["Nodejs", "Java", "NetCore"]:
+            print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+            nueva_ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").capitalize()
+        camper['Ruta'] = nueva_ruta
+    else:
+        print("Opción no válida")
+
+# Buscar la información de un camper en el diccionario
+def buscar_camper(diccionario, num_id):
+    if num_id in diccionario:
+        return diccionario[num_id]
+    else:
+        return "Camper no encontrado."
+
+# Evaluar la nota final de un camper
+def evaluar_camper(campers):
+    num_id = int(input("Ingrese el número de identificación del camper que desea evaluar: "))
+    if num_id in campers:
+        nota_teorica = float(input("Ingrese la nota de la prueba teórica: "))
+        nota_practica = float(input("Ingrese la nota de la prueba práctica: "))
+        nota_quices_trabajos = float(input("Ingrese la nota de los quices/trabajos: "))
+        
+        nota_final = (nota_teorica * 0.3) + (nota_practica * 0.6) + (nota_quices_trabajos * 0.1)
+        
+        if nota_final >= 60:
+            campers[num_id]['Estado'] = "Aprobado"
+            print("¡Felicidades! El camper ha aprobado el módulo con una nota final de", nota_final)
+        else:
+            print("El camper no ha aprobado el módulo. Su nota final es", nota_final)
+    else:
+        print("Camper no encontrado.")
+
+# Menú para el Trainer
+def menu_trainer(campers):
+    while True:
+        print("\n---ℳℯ𝓃𝓊 𝒯𝓇𝒶𝒾𝓃ℯ𝓇---")
+        print("Eres Un Trainer")
+        print("1. Ver datos de un camper")
+        print("2. Evaluar un camper")
+        print("3. Volver al menú principal")
+        
+        opcion = int(input("Ingrese el número de la opción que desea realizar: "))
+        
+        if opcion == 1:
+            num_id = int(input("Ingrese el número de identificación del camper que desea ver: "))
+            if num_id in campers:
+                print("Datos del camper:")
+                print(buscar_camper(campers, num_id))
+            else:
+                print("Camper no encontrado.")
+        elif opcion == 2:
+            evaluar_camper(campers)
+        elif opcion == 3:
+            break
+        else:
+            print("Opción no válida. Por favor ingrese una opción válida.")
+
+# Menú para el Coordinador
+def menu_coordinador(campers):
+    while True:
+        print("\n-͙-͙-͙ ͙M͙e͙n͙ú͙ ͙C͙o͙o͙r͙d͙i͙n͙a͙d͙o͙r͙ ͙-͙-͙-͙")
+        print("Eres Un Cordinador")
+        print("1. Ver datos de un camper")
+        print("2. Evaluar un camper")
+        print("3. Modificar datos de un camper")
+        print("4. Salir")
+        
+        opcion = int(input("Ingrese el número de la opción que desea realizar: "))
+        
+        if opcion == 1:
+            num_id = int(input("Ingrese el número de identificación del camper que desea ver: "))
+            if num_id in campers:
+                print("Datos del camper:")
+                print(buscar_camper(campers, num_id))
+            else:
+                print("Camper no encontrado.")
+        elif opcion == 2:
+            evaluar_camper(campers)
+        elif opcion == 3:
+            num_id = int(input("Ingrese el número de identificación del camper que desea modificar: "))
+            if num_id in campers:
+                modificar_camper(campers[num_id])
+                print("Datos del camper modificados correctamente.")
+            else:
+                print("Camper no encontrado.")
+        elif opcion == 4:
+            break
+        else:
+            print("Opción no válida. Por favor ingrese una opción válida.")
+
+# Función para el menú principal según el rol seleccionado
+def menu_principal():
+    campers = cargar_campers_json()
+    rutas_ocupadas = {}
+
+    while True:
+        print("\n--- Mᴇɴú Pʀɪɴᴄɪᴘᴀʟ ---")
+        print("𝐒𝐞𝐥𝐞𝐜𝐜𝐢𝐨𝐧𝐞 𝐬𝐮 𝐫𝐨𝐥:")
+        print("1. 𝐶𝑎𝑚𝑝𝑠𝑝𝑎𝑠𝑒𝑟")
+        print("2. Tʀᴀɪɴᴇʀ")
+        print("3. Cᴏᴏʀᴅɪɴᴀᴅᴏʀ")
+        print("4. Sᴀʟɪʀ")
+        
+        try:
+            rol = int(input("Iɴɢʀᴇsᴇ ᴇʟ ɴúᴍᴇʀᴏ ᴄᴏʀʀᴇsᴘᴏɴᴅɪᴇɴᴛᴇ ᴀ sᴜ ʀᴏʟ: "))
+        except ValueError:
+            print("Error: Ingrese un número válido.")
+            continue
+        
+        if rol == 1:
+            camper = capturar_datos_camper(rutas_ocupadas)
+            if camper:
+                campers[camper['NumId']] = camper
+                print("Datos del camper ingresados correctamente.")
+                guardar_campers_json(campers)
+        elif rol == 2:
+            menu_trainer(campers)
+        elif rol == 3:
+            menu_coordinador(campers)
+        elif rol == 4:
+            print("Usted Ha Salido Exisotamente :D")
+            guardar_campers_json(campers)
+            break
+        else:
+            print("Rol no válido. Por favor ingrese un rol válido.")
+
+# Función para guardar los campers en un archivo JSON
+def guardar_campers_json(campers):
+    with open('campers.json', 'w') as archivo_json:
+        json.dump(campers, archivo_json)
+
+# Función para cargar campers desde un archivo JSON
+def cargar_campers_json():
+    try:
+        with open('campers.json', 'r') as archivo_json:
+            return json.load(archivo_json)
+    except FileNotFoundError:
+        return {}
+
+# Ejecutar el menú principal
+menu_principal()
