@@ -1,0 +1,463 @@
+import json
+
+def capturar_datos_camper(campers, rutas_ocupadas, entrenadores):
+    """
+    Captura los datos de un nuevo Camper, realiza validaciones y retorna un diccionario con la información.
+    """
+    print("Eres un Camper, ingresa tus datos:")
+    print("--- Menú Camper ---")
+
+    try:
+        # Capturar información personal del Camper
+        NumId = int(input("Ingrese su número de identificación sin puntos ni comas: "))
+
+        # Validar que el número de identificación no esté en uso
+        if NumId in campers:
+            raise ValueError("Error: El número de identificación ingresado ya está en uso. Por favor ingrese otro.")
+
+        Nombre = input("Ingrese sus nombres: ")
+        Apellidos = input("Ingrese sus apellidos: ")
+        Direccion = input("Ingrese su dirección: ")
+        Acudiente = input("Ingrese el nombre de su acudiente: ")
+        Celular = input("Ingrese su número de celular: ")
+        Fijo = input("Ingrese su número de teléfono fijo: ")
+        Riesgo = input("Ingrese el nivel de riesgo: ")
+        Ruta = input("Ingrese la ruta de entrenamiento a la cual aspira (NodeJS, Java, NetCore): ").lower()
+
+        # Validar que la ruta sea válida
+        while Ruta not in ["nodejs", "java", "netcore"]:
+            print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+            Ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+
+        # Mostrar temas asociados a cada ruta
+        if Ruta == "nodejs":
+            print("La ruta de entrenamiento", Ruta, "tiene los siguientes temas.\n",
+                  "- Introducción a NodeJs\n",
+                  "- Programación orientada a objetos\n",
+                  "- Especialización en NodeJs\n")
+        elif Ruta == "java":
+            print("La ruta de entrenamiento", Ruta, "tiene los siguientes temas.\n",
+                  "- Introducción a Java\n",
+                  "- Programación orientada a objetos\n",
+                  "- Especialización en Java\n")
+        else:
+            print("La ruta de entrenamiento", Ruta, "tiene los siguientes temas.\n",
+                  "- Introducción a NetCore\n",
+                  "- Programación orientada a objetos\n",
+                  "- Especialización en NetCore\n")
+
+        # Verificar si la ruta está ocupada
+        if Ruta in rutas_ocupadas and rutas_ocupadas[Ruta] >= 33:
+            raise ValueError(f"Lo siento, la ruta {Ruta} ya ha alcanzado el máximo de 33 campers inscritos.")
+
+        # Incrementar el contador de la ruta ocupada
+        rutas_ocupadas[Ruta] = rutas_ocupadas.get(Ruta, 0) + 1
+
+        # Asignar un entrenador a la ruta
+        asignar_entrenador(entrenadores, Ruta)
+
+        # Crear el diccionario del Camper
+        return {
+            'NumId': NumId,
+            'Nombre': Nombre,
+            'Apellidos': Apellidos,
+            'Direccion': Direccion,
+            'Acudiente': Acudiente,
+            'Celular': Celular,
+            'Fijo': Fijo,
+            'Riesgo': Riesgo,
+            'Ruta': Ruta,
+            'Estado': 'Inscrito'
+        }
+    except ValueError as ve:
+        print(f"Error: {ve}")
+        return None
+
+def asignar_entrenador(entrenadores, ruta):
+    """
+    Asigna un entrenador a la ruta de entrenamiento si aún no tiene uno.
+    """
+    if ruta not in entrenadores:
+        trainer = input(f"No hay entrenador asignado a la ruta {ruta}. Por favor, ingrese el nombre del entrenador: ")
+        entrenadores[ruta] = trainer
+        print(f"Entrenador {trainer} asignado a la ruta {ruta}.")
+
+def modificar_camper(camper):
+    """
+    Modifica datos específicos de un Camper.
+    """
+    print("Modificar datos del camper:")
+    print("1. Modificar número de identificación")
+    print("2. Modificar nombres")
+    print("3. Modificar apellidos")
+    print("4. Modificar dirección")
+    print("5. Modificar acudiente")
+    print("6. Modificar número de celular")
+    print("7. Modificar número de teléfono fijo")
+    print("8. Modificar nivel de riesgo")
+    print("9. Modificar ruta de entrenamiento")
+
+    try:
+        opcion = int(input("Ingrese el número de la opción que desea modificar: "))
+
+        if opcion == 1:
+            camper['NumId'] = int(input("Ingrese el nuevo número de identificación: "))
+        elif opcion == 2:
+            camper['Nombre'] = input("Ingrese los nuevos nombres: ")
+        elif opcion == 3:
+            camper['Apellidos'] = input("Ingrese los nuevos apellidos: ")
+        elif opcion == 4:
+            camper['Direccion'] = input("Ingrese la nueva dirección: ")
+        elif opcion == 5:
+            camper['Acudiente'] = input("Ingrese el nuevo acudiente: ")
+        elif opcion == 6:
+            camper['Celular'] = input("Ingrese el nuevo número de celular: ")
+        elif opcion == 7:
+            camper['Fijo'] = input("Ingrese el nuevo número de teléfono fijo: ")
+        elif opcion == 8:
+            camper['Riesgo'] = input("Ingrese el nuevo nivel de riesgo: ")
+        elif opcion == 9:
+            nueva_ruta = input("Ingrese la nueva ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+            while nueva_ruta not in ["nodejs", "java", "netcore"]:
+                print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+                nueva_ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+            camper['Ruta'] = nueva_ruta
+        else:
+            raise ValueError("Opción no válida")
+    except ValueError as ve:
+        print(f"Error: {ve}")
+
+def buscar_camper(diccionario, num_id):
+    """
+    Busca y retorna la información de un Camper por su número de identificación.
+    """
+    if num_id in diccionario:
+        return diccionario[num_id]
+    else:
+        return "Camper no encontrado."
+
+def evaluar_camper(campers):
+    """
+    Evalúa el desempeño de un Camper mediante pruebas teóricas y prácticas.
+    """
+    try:
+        num_id = int(input("Ingrese el número de identificación del camper que desea evaluar: "))
+        if num_id not in campers:
+            raise ValueError("Camper no encontrado.")
+
+        nota_teorica = float(input("Ingrese la nota de la prueba teórica: "))
+        nota_practica = float(input("Ingrese la nota de la prueba práctica: "))
+        nota_quices_trabajos = float(input("Ingrese la nota de los quices/trabajos: "))
+
+        nota_final = (nota_teorica * 0.3) + (nota_practica * 0.6) + (nota_quices_trabajos * 0.1)
+
+        if nota_final >= 60:
+            campers[num_id]['Estado'] = "Aprobado"
+            print("¡Felicidades! El camper ha aprobado el módulo con una nota final de", nota_final)
+        else:
+            campers[num_id]['Estado'] = "Reprobado"
+            print("El camper no ha aprobado el módulo. Su nota final es", nota_final)
+    except ValueError as ve:
+        print(f"Error: {ve}")
+
+def listar_campers_inscritos(campers):
+    """
+    Lista todos los campers que están inscritos.
+    """
+    campers_inscritos = [camper for camper in campers.values() if camper['Estado'] == 'Inscrito']
+    if campers_inscritos:
+        print("Campers inscritos:")
+        for camper in campers_inscritos:
+            print(camper)
+    else:
+        print("No hay campers inscritos.")
+
+def listar_campers_aprobados(campers):
+    """
+    Lista todos los campers que han aprobado el examen inicial.
+    """
+    campers_aprobados = [camper for camper in campers.values() if camper['Estado'] == 'Aprobado']
+    if campers_aprobados:
+        print("Campers que aprobaron el examen inicial:")
+        for camper in campers_aprobados:
+            print(camper)
+    else:
+        print("No hay campers que hayan aprobado el examen inicial.")
+
+def listar_campers_bajo_rendimiento(campers):
+    """
+    Lista todos los campers con bajo rendimiento que han reprobado el examen inicial.
+    """
+    campers_bajo_rendimiento = [camper for camper in campers.values() if camper['Estado'] == 'Reprobado']
+    if campers_bajo_rendimiento:
+        print("Campers con bajo rendimiento:")
+        for camper in campers_bajo_rendimiento:
+            print(camper)
+    else:
+        print("No hay campers con bajo rendimiento.")
+
+def listar_entrenadores_campuslands(campers):
+    """
+    Lista todos los entrenadores que están trabajando con CampusLands.
+    """
+    entrenadores_campuslands = set()
+    for camper in campers.values():
+        if camper['Estado'] != 'Inscrito':
+            entrenadores_campuslands.add((camper['Nombre'], camper['Apellidos']))
+    if entrenadores_campuslands:
+        print("Entrenadores trabajando con CampusLands:")
+        for nombre, apellidos in entrenadores_campuslands:
+            print(f"{nombre} {apellidos}")
+    else:
+        print("No hay entrenadores trabajando con CampusLands.")
+
+def listar_campers_trainers_ruta(campers):
+    """
+    Lista campers y trainers asociados a una ruta de entrenamiento específica.
+    """
+    ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+    while ruta not in ["nodejs", "java", "netcore"]:
+        print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+        ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+
+    campers_ruta = [camper for camper in campers.values() if camper['Ruta'] == ruta]
+    if campers_ruta:
+        print(f"Campers asociados a la ruta {ruta}:")
+        for camper in campers_ruta:
+            print(camper)
+    else:
+        print(f"No hay campers asociados a la ruta {ruta}.")
+
+def listar_campers_trainers_ruta(campers):
+    """
+    Lista campers y trainers asociados a una ruta de entrenamiento específica.
+    """
+    ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+    while ruta not in ["nodejs", "java", "netcore"]:
+        print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+        ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+
+    campers_ruta = [camper for camper in campers.values() if camper['Ruta'] == ruta]
+    if campers_ruta:
+        print(f"Campers asociados a la ruta {ruta}:")
+        for camper in campers_ruta:
+            print(camper)
+    else:
+        print(f"No hay campers asociados a la ruta {ruta}.")
+
+def listar_campers_entrenadores_ruta(campers):
+    """
+    Lista campers y entrenadores asociados a una ruta de entrenamiento específica.
+    """
+    ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+    while ruta not in ["nodejs", "java", "netcore"]:
+        print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+        ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+
+    campers_ruta = [camper for camper in campers.values() if camper['Ruta'] == ruta]
+    if campers_ruta:
+        entrenadores_asociados = {camper['Nombre']: camper['Ruta'] for camper in campers_ruta}
+        print(f"Entrenadores asociados a la ruta {ruta}:")
+        for entrenador, ruta_entrenamiento in entrenadores_asociados.items():
+            print(f"{entrenador} - Ruta: {ruta_entrenamiento}")
+    else:
+        print(f"No hay campers asociados a la ruta {ruta}.")
+
+def listar_campers_entrenadores_ruta(campers):
+    """
+    Lista campers y entrenadores asociados a una ruta de entrenamiento específica.
+    """
+    ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+    while ruta not in ["nodejs", "java", "netcore"]:
+        print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+        ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+
+    campers_ruta = [camper for camper in campers.values() if camper['Ruta'] == ruta]
+    if campers_ruta:
+        entrenadores_asociados = {camper['Nombre']: camper['Ruta'] for camper in campers_ruta}
+        print(f"Entrenadores asociados a la ruta {ruta}:")
+        for entrenador, ruta_entrenamiento in entrenadores_asociados.items():
+            print(f"{entrenador} - Ruta: {ruta_entrenamiento}")
+    else:
+        print(f"No hay campers asociados a la ruta {ruta}.")
+
+def listar_estadisticas_modulo(campers):
+    """
+    Lista cuántos campers aprobaron y reprobaron cada uno de los módulos, teniendo en cuenta la ruta de entrenamiento y el entrenador encargado.
+    """
+    ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+    while ruta not in ["nodejs", "java", "netcore"]:
+        print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+        ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+
+    entrenador = input("Ingrese el nombre del entrenador encargado: ")
+
+    campers_ruta_entrenador = [camper for camper in campers.values() if camper['Ruta'] == ruta and entrenadores.get(ruta) == entrenador]
+    if campers_ruta_entrenador:
+        aprobados = [camper for camper in campers_ruta_entrenador if camper['Estado'] == 'Aprobado']
+        reprobados = [camper for camper in campers_ruta_entrenador if camper['Estado'] == 'Reprobado']
+        print(f"Estadísticas del módulo - Ruta: {ruta}, Entrenador: {entrenador}")
+        print(f"Aprobados: {len(aprobados)}")
+        print(f"Reprobados: {len(reprobados)}")
+    else:
+        print(f"No hay campers asociados a la ruta {ruta} con el entrenador {entrenador}.")
+
+def menu_cordinador():
+    """
+    Menú para el rol de Coordinador.
+    """
+    while True:
+        print("\n--- Menú Coordinador ---")
+        print("1. Crear nueva ruta de entrenamiento")
+        print("2. Asignar camper a ruta de entrenamiento")
+        print("3. Modificar datos de camper")
+        print("4. Evaluar camper")
+        print("5. Listar campers inscritos")
+        print("6. Listar campers aprobados")
+        print("7. Listar campers con bajo rendimiento")
+        print("8. Listar entrenadores de CampusLands")
+        print("9. Listar campers y trainers asociados a una ruta de entrenamiento")
+        print("10. Estadísticas de módulo (Aprobados/Reprobados)")
+        print("11. Salir")
+
+        opcion = input("Ingrese el número de la opción que desea realizar: ")
+
+        if opcion == "1":
+            crear_nueva_ruta()
+        elif opcion == "2":
+            asignar_camper_ruta()
+        elif opcion == "3":
+            num_id = int(input("Ingrese el número de identificación del camper que desea modificar: "))
+            if num_id in campers:
+                modificar_camper(campers[num_id])
+            else:
+                print("Camper no encontrado.")
+        elif opcion == "4":
+            evaluar_camper(campers)
+        elif opcion == "5":
+            listar_campers_inscritos(campers)
+        elif opcion == "6":
+            listar_campers_aprobados(campers)
+        elif opcion == "7":
+            listar_campers_bajo_rendimiento(campers)
+        elif opcion == "8":
+            listar_entrenadores_campuslands(campers)
+        elif opcion == "9":
+            listar_campers_trainers_ruta(campers)
+        elif opcion == "10":
+            listar_estadisticas_modulo(campers)
+        elif opcion == "11":
+            break
+        else:
+            print("Opción no válida. Por favor, ingrese un número válido.")
+
+def menu_camper():
+    """
+    Menú para el rol de Camper.
+    """
+    camper = capturar_datos_camper(campers, rutas_ocupadas, entrenadores)
+    if camper:
+        print("\nBienvenido a CampusLands. Usted ha sido inscrito con éxito. Aquí tiene la información de su inscripción:")
+        print(camper)
+    else:
+        print("No se pudo realizar la inscripción. Por favor, inténtelo nuevamente.")
+
+def menu_trainer():
+    """
+    Menú para el rol de Trainer.
+    """
+    while True:
+        print("\n--- Menú Trainer ---")
+        print("1. Listar campers inscritos")
+        print("2. Listar campers aprobados")
+        print("3. Listar campers con bajo rendimiento")
+        print("4. Evaluar campers")
+        opcion = input("Ingrese el número de la opción que desea realizar: ")
+
+        if opcion == "1":
+            listar_campers_inscritos(campers)
+        elif opcion == "2":
+            listar_campers_aprobados(campers)
+        elif opcion == "3":
+            listar_campers_bajo_rendimiento(campers)
+        elif opcion =="4":
+            evaluar_camper(campers)
+            break
+        else:
+            print("Opción no válida. Por favor, ingrese un número válido.")
+
+def crear_nueva_ruta():
+    """
+    Crea una nueva ruta de entrenamiento.
+    """
+    print("Crear nueva ruta de entrenamiento:")
+    nombre_ruta = input("Ingrese el nombre de la nueva ruta: ").lower()
+    while nombre_ruta in rutas_ocupadas:
+        print(f"La ruta {nombre_ruta} ya existe. Por favor, ingrese un nombre de ruta diferente.")
+        nombre_ruta = input("Ingrese el nombre de la nueva ruta: ").lower()
+
+    print("Asociar módulos a la nueva ruta:")
+    modulos = []
+    while True:
+        modulo = input("Ingrese el nombre del módulo (o 'fin' para finalizar): ")
+        if modulo.lower() == 'fin':
+            break
+        modulos.append(modulo)
+
+    rutas_ocupadas[nombre_ruta] = 0
+    print(f"Nueva ruta {nombre_ruta} creada con éxito. Módulos asociados: {modulos}")
+
+def asignar_camper_ruta():
+    """
+    Asigna un camper a una ruta de entrenamiento existente.
+    """
+    print("Asignar camper a ruta de entrenamiento:")
+    num_id = int(input("Ingrese el número de identificación del camper: "))
+    if num_id not in campers:
+        print("Camper no encontrado.")
+        return
+
+    if campers[num_id]['Estado'] != 'Inscrito':
+        print(f"El camper con número de identificación {num_id} ya ha sido asignado a una ruta.")
+        return
+
+    ruta = input("Ingrese la ruta de entrenamiento a la cual asignar al camper (NodeJS, Java, NetCore): ").lower()
+    while ruta not in rutas_ocupadas:
+        print("Ruta de entrenamiento no válida. Por favor ingrese una de las opciones disponibles.")
+        ruta = input("Ingrese la ruta de entrenamiento (NodeJS, Java, NetCore): ").lower()
+
+    if rutas_ocupadas[ruta] >= 33:
+        print(f"Lo siento, la ruta {ruta} ya ha alcanzado el máximo de 33 campers inscritos.")
+        return
+
+    campers[num_id]['Ruta'] = ruta
+    rutas_ocupadas[ruta] += 1
+    asignar_entrenador(entrenadores, ruta)
+    print(f"Camper asignado a la ruta {ruta} con éxito.")
+
+# Definir diccionarios
+campers = {}
+rutas_ocupadas = {}
+entrenadores = {}
+
+# Menú principal
+while True:
+    print("\n--- Menú Principal ---")
+    print("1. Camper")
+    print("2. Trainer")
+    print("3. Coordinador")
+    print("4. Salir")
+
+    rol = input("Ingrese el número de su rol: ")
+
+    if rol == "1":
+        menu_camper()
+    elif rol == "2":
+        menu_trainer()
+    elif rol == "3":
+        menu_cordinador()
+    elif rol == "4":
+        print("¡Hasta luego!")
+        break
+    else:
+        print("Rol no válido. Por favor, ingrese un número válido.")
