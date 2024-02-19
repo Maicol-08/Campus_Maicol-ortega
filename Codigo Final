@@ -372,7 +372,7 @@ def menu_cordinador():
         print("6. Listar campers aprobados")
         print("7. Listar campers con bajo rendimiento")
         print("8. Listar entrenadores de CampusLands")
-        print("9. Listar campers y trainers asociados a una ruta de entrenamiento")
+        print("9. Listar campers asociados a una ruta de entrenamiento")
         print("10. Estadísticas de módulo (Aprobados/Reprobados)")
         print("11. Salir")
 
